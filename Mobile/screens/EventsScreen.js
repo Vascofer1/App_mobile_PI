@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,19 +6,53 @@ import {
   StyleSheet,
   TouchableOpacity,
   FlatList,
+  ActivityIndicator 
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
-const eventos = [
-  { id: "1", data: "Terça-feira, 12/03/2025", nome: "Conferencia xxxxxxxxx" },
-  { id: "2", data: "Terça-feira, 12/03/2025", nome: "Conferencia xxxxxxxxx" },
-  { id: "3", data: "Terça-feira, 12/03/2025", nome: "Conferencia xxxxxxxxx" },
-];
+import axios from "axios";
 
 export default function EventosScreen({ navigation }) {
-  const navigateToDashboard = () => {
-    navigation.navigate("Dashboard");
+  
+  const [eventos, setEventos] = useState([]);
+  const [filteredEventos, setFilteredEventos] = useState([]);
+  const [filterText, setFilterText] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  const fetchEventos = async () => {
+    try {
+      const response = await axios.get('http://192.168.1.78:8000/api/eventos'); // substitui pelo teu IP local
+      setEventos(response.data);
+      setFilteredEventos(response.data); // Inicialmente, todos os eventos são exibidos
+    } catch (error) {
+      console.error('Erro ao buscar eventos:', error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  useEffect(() => {
+    fetchEventos();
+  }, []);
+
+  const handleFilterChange = (text) => {
+    setFilterText(text);
+    if (text === '') {
+      setFilteredEventos(eventos); // Se o filtro estiver vazio, exibe todos os eventos
+    } else {
+      const filtered = eventos.filter(evento =>
+        evento.name.toLowerCase().includes(text.toLowerCase())
+      );
+      setFilteredEventos(filtered);
+    }
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#00ff00" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -27,17 +61,15 @@ export default function EventosScreen({ navigation }) {
       <TextInput
         style={styles.input}
         placeholder="Filtrar por: Nome do evento"
+        value={filterText}
+        onChangeText={handleFilterChange}
       />
 
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Registar entrada</Text>
-      </TouchableOpacity>
-
       <FlatList
-        data={eventos}
-        keyExtractor={(item) => item.id}
+        data={filteredEventos}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={navigateToDashboard}>
+          <TouchableOpacity onPress={() => navigation.navigate("Dashboard", { eventoId: item.id })}>
             <View style={styles.eventBox}>
               <Ionicons
                 name="checkmark-circle"
@@ -46,8 +78,8 @@ export default function EventosScreen({ navigation }) {
                 style={{ marginRight: 8 }}
               />
               <View>
-                <Text>{item.data}</Text>
-                <Text style={styles.eventTitle}>{item.nome}</Text>
+                <Text>{item.start_date}</Text>
+                <Text style={styles.eventTitle}>{item.name}</Text>
               </View>
             </View>
           </TouchableOpacity>

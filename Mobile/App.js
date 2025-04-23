@@ -7,7 +7,8 @@ import LoginScreen from './screens/LoginScreen.js';
 import EventsScreen from './screens/EventsScreen.js';
 import DashboardScreen from './screens/DashboardScreen.js';
 import ScannerScreen from './screens/ScannerScreen.js';
-
+import NewEntry from './screens/NewEntry.js';
+import ParticipantesScreen from './screens/ParticipantsScreen.js';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -19,6 +20,8 @@ export default function App() {
         <Stack.Screen name="Events" component={EventsScreen} />
         <Stack.Screen name="Dashboard" component={DashboardScreen} />
         <Stack.Screen name="Scanner" component={ScannerScreen} />
+        <Stack.Screen name="NovaInscricao" component={NewEntry} />
+        <Stack.Screen name="Participants" component={ParticipantesScreen} />
       </Stack.Navigator>
       <StatusBar style="auto" />
     </NavigationContainer>
