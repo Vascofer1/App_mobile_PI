@@ -65,10 +65,10 @@ export default function ParticipantesScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.titulo}>Participantes</Text>
+      <Text style={styles.titulo}>Participants</Text>
 
       <TextInput
-        placeholder="🔍 Procurar participantes"
+        placeholder="🔍 Search participants"
         style={styles.input}
         value={filterText}
         onChangeText={setFilterText}
@@ -76,7 +76,7 @@ export default function ParticipantesScreen() {
 
       {participantesFiltrados.length === 0 ? (
         <Text style={{ textAlign: "center", marginTop: 20 }}>
-          Nenhum participante encontrado.
+          No participants found.
         </Text>
       ) : (
         <FlatList
