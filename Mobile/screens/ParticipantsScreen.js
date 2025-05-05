@@ -6,11 +6,13 @@ import {
   TextInput,
   StyleSheet,
   ActivityIndicator,
+  TouchableOpacity,
+
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import axios from "axios";
 
-export default function ParticipantesScreen() {
+export default function ParticipantesScreen( { navigation }) {
   const route = useRoute();
   const { eventoId } = route.params;
 
@@ -41,18 +43,21 @@ export default function ParticipantesScreen() {
   );
 
   const renderItem = ({ item }) => (
-    <View style={styles.card}>
-      <View style={styles.avatar}>
-        <Text style={styles.avatarText}>
-          {item.name
-            .split(" ")
-            .map((n) => n[0])
-            .join("")
-            .toUpperCase()}
-        </Text>
-      </View>
-      <Text style={styles.nome}>{item.name}</Text>
+    <TouchableOpacity
+    style={styles.card}
+    onPress={() => navigation.navigate("ParticipantDetails", { participanteId: item.id })}
+  >
+    <View style={styles.avatar}>
+      <Text style={styles.avatarText}>
+        {item.name
+          .split(" ")
+          .map((n) => n[0])
+          .join("")
+          .toUpperCase()}
+      </Text>
     </View>
+    <Text style={styles.nome}>{item.name}</Text>
+  </TouchableOpacity>
   );
 
   if (loading) {
@@ -85,6 +90,9 @@ export default function ParticipantesScreen() {
           renderItem={renderItem}
         />
       )}
+      <Text style={{ textAlign: "center", marginTop: 20 }}>
+        {participantesFiltrados.length} participant(s) found.
+      </Text>
     </View>
   );
 }

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, Button, Dimensions } from "react-native";
+import { Text, View, StyleSheet, Button, Dimensions, Alert } from "react-native";
 import { CameraView, Camera } from "expo-camera";
 import axios from "axios";
-import {useRoute} from "@react-navigation/native";
+import { useRoute, useNavigation } from "@react-navigation/native";
 
 export default function App() {
   const [hasPermission, setHasPermission] = useState(null);
@@ -10,7 +10,9 @@ export default function App() {
   const screenWidth = Dimensions.get("window").width;
   const squareSize = screenWidth * 0.8; // 80% da largura da tela
   const route = useRoute();
+  const navigation = useNavigation();
   const { eventoId } = route.params; // Obter o ID do evento da rota
+
   useEffect(() => {
     const getCameraPermissions = async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
@@ -22,39 +24,45 @@ export default function App() {
 
   const handleBarcodeScanned = async ({ type, data }) => {
     setScanned(true);
-    //alert(`Barcode of type ${type} and data ${data} has been scanned!`);
 
     try {
-      // Enviar para a API para atualizar o status
       const response = await axios.post("http://192.168.1.78:8000/api/validar-qrcode", {
         code: data,
-        event_id: eventoId, 
+        event_id: eventoId,
       });
-      
+
       const participante = response.data;
-  
-      if (participante.status === "confirmado") {
-        alert(`✅ ${participante.nome} confirmado com sucesso!`);
-      } else {
+
+      if (participante.status === "Confirmed") {
         alert(`⚠️ Participante encontrado, mas status: ${participante.status}`);
+      } else {
+        alert(`✅ ${participante.nome} confirmado com sucesso!`);
       }
-  
+
     } catch (error) {
-      // Se a API respondeu com um erro conhecido (ex: 404 com mensagem customizada)
-      if (error.response && error.response.data?.error) {
-        alert(`❌ ${error.response.data.error}`);
-        
-        // Opcional: só mostra no console se for outro erro que não o 404
-        if (error.response.status !== 404) {
+      
+
+        // Se o erro for 404 (participante não encontrado), oferecer inscrição manual
+        if (error.response.status === 404) {
+          Alert.alert(
+            " ❌ Participante não encontrado",
+            "Deseja se inscrever manualmente?",
+            [
+              { text: "Cancelar", style: "cancel" },
+              {
+                text: "Sim",
+                onPress: () => {
+                  navigation.navigate("NovaInscricao", { eventoId });
+                },
+              },
+            ]
+          );
+        } else {
           console.error(error);
         }
-      } else {
-        console.error(error);
-        alert("❌ Erro ao confirmar participante.");
-      }
+      
     }
   };
-
 
   if (hasPermission === null) {
     return <Text>Solicitando permissão da câmera</Text>;
@@ -74,7 +82,7 @@ export default function App() {
           style={styles.camera}
         />
       </View>
-      
+
       {scanned && (
         <View style={styles.buttonContainer}>
           <Button title={"Scan again"} onPress={() => setScanned(false)} />
@@ -92,7 +100,7 @@ const styles = StyleSheet.create({
   },
   cameraContainer: {
     borderRadius: 10,
-    overflow: "hidden", // Para garantir que a câmera respeite o border radius
+    overflow: "hidden",
   },
   camera: {
     flex: 1,
