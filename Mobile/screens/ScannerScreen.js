@@ -34,7 +34,7 @@ export default function App() {
       const participante = response.data;
 
       if (participante.status === "Confirmed") {
-        alert(`⚠️ Participante encontrado, mas status: ${participante.status}`);
+        alert(`⚠️ Participant found, but status: ${participante.status}`);
       } else {
         alert(`✅ ${participante.nome} confirmado com sucesso!`);
       }
@@ -44,19 +44,19 @@ export default function App() {
 
         // Se o erro for 404 (participante não encontrado), oferecer inscrição manual
         if (error.response.status === 404) {
-          Alert.alert(
-            " ❌ Participante não encontrado",
-            "Deseja se inscrever manualmente?",
+            Alert.alert(
+            " ❌ Participant not found",
+            "Would you like to register manually?",
             [
-              { text: "Cancelar", style: "cancel" },
+              { text: "Cancel", style: "cancel" },
               {
-                text: "Sim",
-                onPress: () => {
-                  navigation.navigate("NovaInscricao", { eventoId });
-                },
+              text: "Yes",
+              onPress: () => {
+                navigation.navigate("NewRegistration", { eventoId });
+              },
               },
             ]
-          );
+            );
         } else {
           console.error(error);
         }

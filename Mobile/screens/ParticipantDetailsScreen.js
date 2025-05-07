@@ -36,7 +36,7 @@ export default function ParticipanteDetalhesScreen() {
     if (!participante) {
         return (
             <View style={styles.container}>
-                <Text style={styles.errorText}>Participante não encontrado.</Text>
+            <Text style={styles.errorText}>Participant not found.</Text>
             </View>
         );
     }
