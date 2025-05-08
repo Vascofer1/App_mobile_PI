@@ -12,7 +12,7 @@ export default function ParticipanteDetalhesScreen() {
     useEffect(() => {
         const fetchParticipante = async () => {
             try {
-                const response = await axios.get(`http://192.168.1.78:8000/api/participantes/${participanteId}`);
+                const response = await axios.get(`http://172.22.21.136:80/api/participantes/${participanteId}`);
                 setParticipante(response.data);
             } catch (error) {
                 console.error(error);

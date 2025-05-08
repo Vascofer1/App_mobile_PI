@@ -19,7 +19,7 @@ export default function DashboardScreen({ navigation }) {
 
   useEffect(() => {
     axios
-      .get(`http://192.168.1.78:8000/api/eventos/${eventoId}`)
+      .get(`http://172.22.21.136:80/api/eventos/${eventoId}`)
       .then((response) => {
         setEvento(response.data);
         setLoading(false);

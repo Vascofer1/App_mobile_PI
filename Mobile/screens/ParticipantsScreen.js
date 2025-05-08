@@ -24,7 +24,7 @@ export default function ParticipantesScreen( { navigation }) {
     const fetchParticipantes = async () => {
       try {
         const response = await axios.get(
-          `http://192.168.1.78:8000/api/eventos/${eventoId}/participantes`
+          `http://172.22.21.136:80/api/eventos/${eventoId}/participantes`
         );
         setParticipantes(response.data);
       } catch (error) {

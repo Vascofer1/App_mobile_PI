@@ -11,7 +11,7 @@ export default function NovaInscricao({ route }) {
   const [mensagem, setMensagem] = useState('');
 
   const handleInscricao = () => {
-    axios.post(`http://192.168.1.78:8000/api/eventos/${eventoId}/inscrever`, {
+    axios.post(`http://172.22.21.136:80/api/eventos/${eventoId}/inscrever`, {
       name,
       email,
       phone

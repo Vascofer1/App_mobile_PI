@@ -20,7 +20,7 @@ export default function EventosScreen({ navigation }) {
 
   const fetchEventos = async () => {
     try {
-      const response = await axios.get('http://192.168.1.78:8000/api/eventos'); // substitui pelo teu IP local
+      const response = await axios.get('http://172.22.21.136:80/api/eventos'); // substitui pelo teu IP local
       setEventos(response.data);
       setFilteredEventos(response.data); // Inicialmente, todos os eventos são exibidos
     } catch (error) {

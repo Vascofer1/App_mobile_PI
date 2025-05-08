@@ -26,7 +26,7 @@ export default function App() {
     setScanned(true);
 
     try {
-      const response = await axios.post("http://192.168.1.78:8000/api/validar-qrcode", {
+      const response = await axios.post("http://172.22.21.136:80/api/validar-qrcode", {
         code: data,
         event_id: eventoId,
       });
